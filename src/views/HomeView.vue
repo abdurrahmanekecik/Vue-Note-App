@@ -1,4 +1,17 @@
 <script setup>
+import { ref, onMounted } from 'vue';
+import notesService from '@/services/notes';
+
+const notes = ref([]);
+
+onMounted(async () => {
+  try {
+    const response = await notesService.getNotes();
+    notes.value = response.data;
+  } catch (error) {
+    console.error("Veri alınırken bir hata oluştu:", error.message);
+  }
+});
 </script>
 
 <template>
@@ -36,22 +49,26 @@
             <tbody>
 
 
-              <tr v-for="note in notes" :key="note.id"
+              <tr v-for="(note, index) in notes" :key="note.id"
                 class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
                 <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                  Apple MacBook Pro 17"
+                  {{ index + 1 }}
                 </th>
                 <td class="px-6 py-4">
-                  Laptop
+
+                  {{ note.title }}
+
                 </td>
                 <td class="px-6 py-4">
-                  Laptop
+                  <span v-if="note.status == 1" class="text-green-500">Active</span>
+                  <span v-else class="text-red-500">Passive</span>
                 </td>
                 <td class="px-6 py-4">
-                  $2999
+                  {{ note.created_at }}
                 </td>
                 <td class="px-6 py-4">
-                  <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
+                  <a :href="'/edit/' + note.id"
+                    class="font-medium text-blue-600 dark:text-blue-500 cursor-pointer">Edit</a>
                 </td>
               </tr>
 
