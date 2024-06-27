@@ -12,4 +12,12 @@ export default {
         return apiClient.get('/notes');
     },
 
+    getNote(id) {
+        return apiClient.get(`/get-note/${id}`);
+    },
+
+    update(noteData) {
+
+        return apiClient.put(`/notes`, noteData);
+    }
 };
