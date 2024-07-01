@@ -1,10 +1,35 @@
+<script setup>
+import { ref } from 'vue';
+import notesService from '@/services/notes';
+const notes = ref({
+  title: '',
+  status: '1', // Varsayılan olarak 'Active' seçili
+  content: ''
+});
+
+
+
+const submit = async () => {
+  try {
+    // -console.log(JSON.stringify(notes.value, null, 2));
+
+    await notesService.create(notes.value);
+    console.log('Note created successfully');
+
+  } catch (error) {
+    console.error('Error creating note:', error);
+  }
+};
+</script>
+
+
 <template>
   <div>
 
-    <form class="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md dark:bg-gray-800">
+    <form class="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md dark:bg-gray-800" @submit.prevent="submit">
       <div class="grid md:grid-cols-2 md:gap-6">
         <div class="relative z-0 w-full mb-6 group">
-          <input type="text" name="floating_first_name" id="floating_first_name"
+          <input v-model="notes.title" type="text" name="floating_first_name" id="floating_first_name"
             class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
             placeholder=" " required />
           <label for="floating_first_name"
@@ -14,9 +39,9 @@
         </div>
 
         <div class="relative z-0 w-full mb-6 group">
-          <label for="countries" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select
+          <label for="status" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select
             Status</label>
-          <select id="countries"
+          <select id="status" v-model="notes.status"
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
             <option value="1">Active</option>
             <option value="0">Passive</option>
@@ -27,10 +52,11 @@
 
       <div class="grid md:grid-cols-1 md:gap-6">
         <div class="relative z-0 w-full mb-6 group">
-          <label for="content" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your content</label>
+          <label for="content" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your
+            content</label>
           <textarea id="content" rows="4"
             class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            placeholder="Content..."></textarea>
+            placeholder="Content..." v-model="notes.content"></textarea>
         </div>
       </div>
 
@@ -39,7 +65,6 @@
         Submit
       </button>
     </form>
-
 
 
 

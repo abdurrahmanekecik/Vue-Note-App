@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import notesService from '@/services/notes';
+import Swal from 'sweetalert2'; // Swal kütüphanesini import et
 
 const notes = ref([]);
 
@@ -12,6 +13,38 @@ onMounted(async () => {
     console.error("Veri alınırken bir hata oluştu:", error.message);
   }
 });
+
+const confirmDelete = async (id) => {
+  const result = await Swal.fire({
+    title: 'Are you sure?',
+    text: "You won't be able to revert this!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes, delete it!'
+  });
+
+  if (result.isConfirmed) {
+    try {
+
+      await notesService.delete(id);
+      // Başarıyla silindiğine dair bildirim veya başka işlemler yapabilirsiniz
+      Swal.fire(
+        'Deleted!',
+        'Your note has been deleted.',
+        'success'
+      );
+      // this.loadNotes(); // Notları tekrar yüklemek için ilgili fonksiyonu çağırın
+    } catch (error) {
+      Swal.fire(
+        'Error!',
+        'Failed to delete note.',
+        'error'
+      );
+    }
+  }
+};
 </script>
 
 <template>
@@ -39,7 +72,7 @@ onMounted(async () => {
                   Status
                 </th>
                 <th scope="col" class="px-6 py-3">
-                  Created At
+                  Delete Action
                 </th>
                 <th scope="col" class="px-6 py-3">
                   Action
@@ -64,8 +97,11 @@ onMounted(async () => {
                   <span v-else class="text-red-500">Passive</span>
                 </td>
                 <td class="px-6 py-4">
-                  {{ note.created_at }}
+                  <a :href="'/delete-note/' + note.id"
+                    class="font-medium text-blue-600 dark:text-blue-500 cursor-pointer"
+                    @click.prevent="confirmDelete(note.id)">Delete</a>
                 </td>
+
                 <td class="px-6 py-4">
                   <a :href="'/edit/' + note.id"
                     class="font-medium text-blue-600 dark:text-blue-500 cursor-pointer">Edit</a>

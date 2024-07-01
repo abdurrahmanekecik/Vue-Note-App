@@ -19,5 +19,15 @@ export default {
     update(noteData) {
 
         return apiClient.put(`/notes`, noteData);
-    }
+    },
+
+    create(noteData) {
+        return apiClient.post('/notes', noteData);
+    },
+
+    delete(id) {
+        return apiClient.delete('/notes', {
+            data: { id }
+        });
+    },
 };
