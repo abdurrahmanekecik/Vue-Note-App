@@ -33,3 +33,5 @@ npm run build
 ```sh
 npm run lint
 ```
+
+Backend: https://github.com/abdurrahmanekecik/Expresss-Note-App/
